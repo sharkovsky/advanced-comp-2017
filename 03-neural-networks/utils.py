@@ -42,6 +42,8 @@ def plot_surface(clf, X, y, n_steps=250, show=True, ylim=None,
     if ax is None:
         fig = plt.figure()
         ax = plt.gca()
+        
+    num_classes = np.unique(y)
 
     if xlim is None:
         xlim = X[:, 0].min(), X[:, 0].max()
@@ -52,8 +54,10 @@ def plot_surface(clf, X, y, n_steps=250, show=True, ylim=None,
 
     if hasattr(clf, "decision_function"):
         z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
-    else:
+    elif num_classes == 2:
         z = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
+    else:
+        z = clf.predict(np.c_[xx.ravel(), yy.ravel()])    
 
     z = z.reshape(xx.shape)
     ax.contourf(xx, yy, z, alpha=0.8, cmap=plt.cm.RdBu_r)
